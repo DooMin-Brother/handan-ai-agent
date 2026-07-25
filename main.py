@@ -64,15 +64,6 @@ st.subheader("AI 답변")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display response box
-with st.container(border=True):
-    if not st.session_state.messages:
-        st.info("💬 AI가 답변을 여기에 표시합니다. 질문을 입력하거나 음성으로 말씀해 주세요.")
-    else:
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.write(message["content"])
-
 # File Upload Section
 uploaded_file = st.file_uploader(
     "자료 첨부", 
@@ -94,23 +85,31 @@ if user_prompt:
     # Append user message
     st.session_state.messages.append({"role": "user", "content": user_prompt})
     
-    # Configure API Key
+    # Configure API Key & Model
     try:
         api_key = st.secrets["GEMINI_API_KEY"]
         genai.configure(api_key=api_key)
         
-        # Corrected Official Model Name
+        # 최신 표준 모델명으로 지정
         model = genai.GenerativeModel('gemini-2.5-flash')
         
         with st.spinner("AI가 기술 자료를 분석 중입니다..."):
             response = model.generate_content(user_prompt)
             st.session_state.messages.append({"role": "assistant", "content": response.text})
-            st.rerun()
             
     except KeyError:
         st.error("API 키 설정 오류: Streamlit Secrets에 GEMINI_API_KEY가 설정되지 않았습니다.")
     except Exception as e:
         st.error(f"답변 생성 오류: {e}")
+
+# Display response box (대화 내역 표시 위치 조정)
+with st.container(border=True):
+    if not st.session_state.messages:
+        st.info("💬 AI가 답변을 여기에 표시합니다. 질문을 입력하거나 음성으로 말씀해 주세요.")
+    else:
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
+                st.write(message["content"])
 
 st.markdown("""
 <small style='color: gray;'>
