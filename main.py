@@ -118,4 +118,4 @@ st.markdown("""
 • 문자 질의 응답 시 문자입력 창에 입력하여 질의 응답을 하십시오<br>
 • 자료는 문자, 파일, 사진, 스캔화면, 동영상 등을 드래그하여 올려 주십시오.
 </small>
-""", unsafe_html=True)
+""", unsafe_allow_html=True)
