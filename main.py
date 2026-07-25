@@ -48,7 +48,7 @@ if st.sidebar.button("📄 레포트 작성 요청"):
 st.sidebar.markdown("---")
 st.sidebar.subheader("📞 기술 지원 & 고객센터")
 st.sidebar.markdown("[💬 카카오톡 1:1 실시간 상담](http://pf.kakao.com)")
-st.sidebar.caption("전화: 031-4798-4970")
+st.sidebar.caption("전화: 031-498-4970")
 st.sidebar.caption("이메일: handancity@handancity.co.kr")
 
 st.sidebar.markdown("---")
@@ -91,7 +91,7 @@ if user_prompt:
         genai.configure(api_key=api_key)
         
         # 최신 표준 모델명으로 지정
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
         with st.spinner("AI가 기술 자료를 분석 중입니다..."):
             response = model.generate_content(user_prompt)
