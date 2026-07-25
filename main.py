@@ -13,7 +13,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# 2. 커스텀 CSS (기존 디자인 100% 유지)
+# 2. 커스텀 CSS
 st.markdown("""
     <style>
     .main-header { font-size: 22px; font-weight: bold; margin-bottom: 4px; color: #111; }
@@ -49,7 +49,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # ==========================================
-# 1. 좌측 사이드바 영역 (기존 복원)
+# 1. 좌측 사이드바 영역
 # ==========================================
 with st.sidebar:
     st.markdown("""
@@ -65,15 +65,12 @@ with st.sidebar:
         </a>
     </div>
 
-    <!-- 얇고 상하 여백이 매우 좁은 커스텀 구분선 (여백 8px) -->
     <hr style='margin: 8px 0; border: none; border-top: 1px solid #e0e0e0;'>
 
-    <!-- 취급품목 제목 (상단 여백 4px) -->
     <div style='font-size: 15px; font-weight: bold; margin-top: 4px; margin-bottom: 6px; color: #111111;'>
         취급품목
     </div>
 
-    <!-- 취급품목 내용 -->
     <div style='font-size: 14px; font-weight: bold; line-height: 1.4; color: #111111;'>
         • PLC<br>
         • 모션콘트롤러<br>
@@ -127,14 +124,13 @@ with st.sidebar:
 
 
 # ==========================================
-# 2. 메인 화면 영역 (기존 복원)
+# 2. 메인 화면 영역
 # ==========================================
 st.markdown("<div class='main-header'>🤖 한단제어기술 AI 기술지원 & 매뉴얼 비서</div>", unsafe_allow_html=True)
 st.markdown("<div class='sub-header'>업로드된 기술 매뉴얼 및 현장 자료를 바탕으로 정확하고 빠르게 답변해 드립니다.</div>", unsafe_allow_html=True)
 
 st.markdown("### AI 답변")
 
-# 대화 내용 출력 영역 (스크롤 박스)
 chat_container = st.container(height=480)
 
 with chat_container:
@@ -144,7 +140,6 @@ with chat_container:
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
-                # 답변에 음성이 포함되어 있으면 재생 플레이어 표시
                 if "audio" in msg:
                     st.audio(msg["audio"], format="audio/mp3")
 
@@ -154,7 +149,6 @@ with chat_container:
 # ==========================================
 st.write("")
 
-# 파일 업로드
 uploaded_files = st.file_uploader(
     "자료 첨부 (문자, 파일, 사진, 스캔화면, 동영상 등을 드래그하여 올려주십시오)",
     type=["pdf", "txt", "png", "jpg", "jpeg", "mp4", "mov"],
@@ -168,7 +162,6 @@ with col_input:
     user_text = st.chat_input("AI에게 기술 질문을 입력하세요...")
 
 with col_voice:
-    # 원버튼 음성 녹음 위젯
     audio_data = mic_recorder(
         start_prompt="🎙️ 음성 질의",
         stop_prompt="🛑 녹음 완료",
@@ -200,10 +193,8 @@ elif audio_data is not None and 'bytes' in audio_data:
     audio_bytes_data = audio_data['bytes']
 
 if final_prompt:
-    # 사용자 메시지 등록
     st.session_state.messages.append({"role": "user", "content": final_prompt})
 
-    # Gemini API 응답 생성
     with chat_container:
         with st.chat_message("user"):
             st.markdown(final_prompt)
@@ -220,7 +211,6 @@ if final_prompt:
                     엔지니어의 현장 질문에 대해 매뉴얼과 첨부자료를 바탕으로 명확하고 신속하게 답변하세요.
                     """
                     
-                    # 입력 모드(음성 / 텍스트) 구분 처리
                     if is_audio_mode:
                         contents_payload = [
                             sys_prompt,
@@ -229,8 +219,9 @@ if final_prompt:
                     else:
                         contents_payload = final_prompt
 
+                    # [핵심 변경 사항] gemini-1.5-flash -> gemini-2.5-flash
                     response = client.models.generate_content(
-                        model="gemini-1.5-flash",
+                        model="gemini-2.5-flash",
                         contents=contents_payload,
                         config=types.GenerateContentConfig(
                             system_instruction=sys_prompt
@@ -240,14 +231,12 @@ if final_prompt:
                     ans_text = response.text
                     msg_placeholder.markdown(ans_text)
 
-                    # --- gTTS 음성 변환 (음성 재생 파일 생성) ---
                     tts = gTTS(text=ans_text, lang='ko')
                     fp = io.BytesIO()
                     tts.write_to_fp(fp)
                     fp.seek(0)
                     audio_out_bytes = fp.read()
 
-                    # 메시지 내역에 텍스트 및 음성 저장
                     st.session_state.messages.append({
                         "role": "assistant", 
                         "content": ans_text,
