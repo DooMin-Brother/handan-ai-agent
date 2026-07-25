@@ -91,7 +91,7 @@ if user_prompt:
         genai.configure(api_key=api_key)
         
         # 최신 표준 모델명으로 지정
-        model = genai.GenerativeModel('models/gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash-latest'')
         
         with st.spinner("AI가 기술 자료를 분석 중입니다..."):
             response = model.generate_content(user_prompt)
