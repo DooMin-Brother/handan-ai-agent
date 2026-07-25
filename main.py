@@ -100,7 +100,7 @@ if user_prompt:
         genai.configure(api_key=api_key)
         
         # Corrected Official Model Name
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         with st.spinner("AI가 기술 자료를 분석 중입니다..."):
             response = model.generate_content(user_prompt)
