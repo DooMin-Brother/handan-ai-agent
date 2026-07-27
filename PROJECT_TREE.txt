@@ -1,0 +1,26 @@
+handan-ai-agent-v0.2/
+├─ app.py
+├─ access_control/          # 신규
+├─ agent/
+├─ analytics/
+├─ core/
+├─ customers/
+├─ docs/
+│  ├─ MASTER_REQUIREMENTS.md
+│  ├─ MASTER_REQUIREMENTS_v1.2.md
+│  ├─ ARCHITECTURE.md
+│  ├─ DEVELOPMENT_PLAN.md
+│  └─ CHANGELOG.md
+├─ integrations/
+├─ knowledge/
+├─ knowledge_base/
+├─ memory/
+├─ privacy/                 # 신규
+├─ reports/
+├─ repositories/
+├─ retention/
+├─ services/
+├─ sessions/
+├─ tests/
+├─ tools/
+└─ ui/
